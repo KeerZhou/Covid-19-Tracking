@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>参考文献</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+
+    </script>
+
+    <link href="../static/css/base.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/layout.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<!-- 网页头部 -->
+{% include 'header.html' %}
+
+<!--网页主体 -->
+<div class="container page-header" id="header_body">
+    <h2>相关研究</h2>
+</div>
+<div class="container inner_article">
+    <div class="col-md-9" role="main">
+        <div>
+            <span>累计研究共计{{ article_num }}条信息</span>
+            <div class="dropdown time-sort">
+                <span>排序：</span><div class="dropbtn time-sort-btn"><span id="time_sort_name" class="time-sort-text" onclick="show_time_sort()">{{ time_sort_name }}</span><span class="dropbtnicon"></span></div>
+                <ul class="time-sort-list" id="time_sort_list">
+                    <a href="/covid19_table/article?time_sort=default"><li>默认排序</li></a>
+                    <a href="/covid19_table/article?time_sort=asc"><li>发布时间由早到晚排序</li></a>
+                    <a href="/covid19_table/article?time_sort=desc"><li>发布时间由晚到早排序</li></a>
+                </ul>
+            </div>
+        </div>
+        <div class="body-main">
+            {% for article in article_list %}
+            <div class="article_cage">
+                <h4><a href="article/detail/{{ article.article_id }}">{{ article.title }}</a></h4>
+                <div class="article_item">
+                    <p>{{ article.content }}</p>
+                </div>
+                <span>来源：<a href="{{ article.source_url }}">{{ article.source }}</a></span><span>发布日期：{{ article.publish_date }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="article_footer">
+            <div class="col-md-7 col-md-offset-2">
+                <nav aria-label="Page navigation">
+                  <ul class="pagination">
+                    <li>
+                      <a href="/covid19_table/article?time_sort={{ time_sort }}&page={{ previous_page }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                    {% for num in page_num %}
+                        <li id={{ num }}><a href="/covid19_table/article?time_sort={{ time_sort }}&page={{ num }}">{{ num }}</a></li>
+                    {% endfor %}
+                    <li>
+                      <a href="/covid19_table/article?time_sort={{ time_sort }}&page={{ next_page }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3" role="complementary">
+        <div>
+            <h3 style="border-bottom: 1px solid black; padding-bottom: 10px;">分类浏览</h3>
+            <div class="article_latest_cage">
+                <h4>最新研究</h4>
+                <ul>
+                    {% for article in top5_article_list %}
+                        <li>
+                            <h5>
+                                <a href="article/detail/{{ article.article_id }}">{{ article.title }}</a>
+                            </h5>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="article_latest_cage">
+                <h4>来源机构</h4>
+                <ul>
+                {% for article in article_source_list %}
+                    <li>
+                        <h5>
+                            <a>{{ article.source }}</a>
+                        </h5>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var current_page_inedx = {{ curr_page }}
+    var current_page = document.getElementById(current_page_inedx)
+    current_page.setAttribute("class", "active");
+
+    var time_sort_list = document.getElementById('time_sort_list')
+    function show_time_sort() {
+        time_sort_list.style.display = 'inline-block';
+    }
+    var inner_body = document.getElementById('header_body');
+    inner_body.onclick = function () {
+        time_sort_list.style.display = 'none';
+    }
+</script>
+
+<!--网页尾部 -->
+{% include 'footer.html' %}

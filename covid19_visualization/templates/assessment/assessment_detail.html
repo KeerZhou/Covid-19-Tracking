@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>预测评估</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+
+    </script>
+    <base href="/">
+    <script src="static/js/jquery-3.5.1.min.js"></script>
+    <script src="static/js/echarts.min.js"></script>
+    <link href="static/css/base.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/layout.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<!-- 网页头部 -->
+{% include 'header.html' %}
+
+<!--网页主体 -->
+<div class="container page-header" id="header_body">
+    <h2 id="cityName">{{ cityName }}</h2>
+</div>
+<div class="container inner_research">
+    <div class="body-main">
+        <div id="omega_cage">
+            <span>复阳率：</span>
+            <div class="dropdown model-dropdown">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span id="omega_current">0.05</span>
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="omega_select_list">
+                  {% for omega in omega_list %}
+                    <li><a>{{ omega }}</a></li>
+                  {% endfor %}
+              </ul>
+            </div>
+        </div>
+
+        <div id="city_incr" class="col-md-6 predict-result-cage"></div>
+        <div id="city_accu" class="col-md-6 predict-result-cage"></div>
+    </div>
+    <div id="test"></div>
+</div>
+
+<script>
+    // 基于准备好的dom，初始化echarts实例
+    var incrChart = echarts.init(document.getElementById('city_incr'));
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '新增确诊人数',
+            left: 'center',
+            top: 'top',
+            textStyle:{
+                fontSize:15
+            }
+        },
+        tooltip: {
+            trigger:'axis',
+            formatter: '<span>报道数据: </span>{b0}: {c0}<br /><span>预测数据: </span>{b1}: {c1}'
+        },
+        legend: {
+            left: 'right',
+            top: 'top'
+        },
+        grid: {
+          x:70
+        },
+        xAxis: {
+            name: '日期',
+            data: [],
+            nameTextStyle:{
+                fontSize: 12,
+                fontWeight: 'bold',
+                fontFamily:'msyh'
+            },
+            axisLabel:{
+                interval:[],
+                showMaxLabel: true,
+                rotate:35,
+                textStyle: {
+                    fontSize: 12,
+                    fontWeight: 'bold',
+                }
+            },
+        },
+        yAxis: [ {
+            type: 'value',
+            name: '人数',
+            show:true,
+            nameTextStyle:{
+                fontSize: 12,
+                fontWeight: 'bold',
+                fontFamily:'msyh'
+            },
+            splitLine:{
+                show: true,
+                lineStyle:{
+                   color: ['#baddeb'],
+                   width: 2,
+              }
+            },
+            axisLine: {
+                lineStyle: {
+                    width: 1,
+                }
+            },
+            axisLabel: {
+                textStyle: {
+                    fontSize: 12,
+                    fontWeight: 'bold'
+                }
+            }
+        }],
+        series: [{
+            type: 'bar',
+            barWidth : '50%',
+            data: [],
+            itemStyle: {
+                color: '#ee9b90'
+            }
+        },{
+            type: 'line',
+            smooth:true,
+            data: [],
+            itemStyle: {
+                color: '#c33531',
+            },
+            lineStyle: {
+                width: 3
+            }
+        }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    incrChart.setOption(option);
+
+    // 基于准备好的dom，初始化echarts实例
+    var accuChart = echarts.init(document.getElementById('city_accu'));
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '累计确诊人数',
+            left: 'center',
+            top: 'top',
+            textStyle:{
+                fontSize:15
+            }
+        },
+        tooltip: {
+            trigger:'axis',
+            formatter: '<span>报道数据: </span>{b0}: {c0}<br /><span>预测数据: </span>{b1}: {c1}'
+        },
+        legend: {
+            left: 'right',
+            top: 'top'
+        },
+        grid: {
+          x:70
+        },
+        xAxis: {
+            name: '日期',
+            data: [],
+            nameTextStyle:{
+                fontSize: 12,
+                fontWeight: 'bold',
+                fontFamily:'msyh'
+            },
+            axisLabel:{
+                interval:[],
+                showMaxLabel: true,
+                rotate:35,
+                textStyle: {
+                    fontSize: 12,
+                    fontWeight: 'bold',
+                }
+            },
+        },
+        yAxis: [ {
+            type: 'value',
+            name: '人数',
+            show:true,
+            nameTextStyle:{
+                fontSize: 12,
+                fontWeight: 'bold',
+                fontFamily:'msyh'
+            },
+            splitLine:{
+                show: true,
+                lineStyle:{
+                   color: ['#baddeb'],
+                   width: 2,
+              }
+            },
+            axisLine: {
+                lineStyle: {
+                    width: 1,
+                }
+            },
+            axisLabel: {
+                textStyle: {
+                    fontSize: 12,
+                    fontWeight: 'bold'
+                }
+            }
+        }],
+        series: [{
+            type: 'bar',
+            barWidth : '50%',
+            data: [],
+            itemStyle: {
+                color: '#ee9b90'
+            }
+        },{
+            type: 'line',
+            smooth:true,
+            data: [],
+            itemStyle: {
+                color: '#c33531',
+            },
+            lineStyle: {
+                width: 3
+            }
+        }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    accuChart.setOption(option);
+
+</script>
+
+<script>
+    var predict_result = {{ predict_result|safe }};
+    var option1 = incrChart.getOption();
+    option1.xAxis[0].data = predict_result[0];
+    option1.xAxis[0].axisLabel.interval = 15;
+    option1.series[0].data = predict_result[2];
+    option1.series[1].data = predict_result[4];
+    incrChart.setOption(option1);
+    var option2 = accuChart.getOption();
+    option2.xAxis[0].data = predict_result[0];
+    option2.xAxis[0].axisLabel.interval = 15;
+    option2.series[0].data = predict_result[1];
+    option2.series[1].data = predict_result[3];
+    accuChart.setOption(option2);
+</script>
+
+<script>
+    $('.dropdown-toggle').dropdown();
+    var omega_list = {{ omega_list }};
+    var omega_current = document.getElementById("omega_current");
+    omega_current.innerHTML = omega_list[1];
+    var omega_select_list = document.getElementById("omega_select_list").getElementsByTagName("li");
+    for(var i = 0; i < omega_select_list.length;i++){
+        omega_select_list[i].onclick = function () {
+            omega_current.innerHTML = this.innerHTML;
+            draw();
+        };
+    }
+</script>
+
+<script>
+    //模拟按钮
+    var draw = function () {
+        var omega = $('#omega_current').text();
+        var cityName = $('#cityName').text();
+        $.ajax({
+            url: 'covid19_table/changeomega',
+            dataType: 'JSON',
+            type: 'GET',
+            data: {
+                cityName: cityName,
+                omega: omega,
+            },
+            success: function (res) {
+                //document.getElementById("test").innerHTML = res;
+                var option1 = incrChart.getOption();
+                option1.series[1].data = res['pre_confirmedIncr'];
+                incrChart.setOption(option1);
+                var option2 = accuChart.getOption();
+                option2.series[1].data = res['pre_confirmedCount'];
+                accuChart.setOption(option2);
+            }
+        });
+    }
+</script>
+
+<!--网页尾部 -->
+{% include 'footer.html' %}
+
+</body>
+</html>
+

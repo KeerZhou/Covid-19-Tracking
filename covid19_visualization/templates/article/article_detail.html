@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>参考文献</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+
+    </script>
+
+    <link href="/static/css/base.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/layout.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<!-- 网页头部 -->
+{% include 'header.html' %}
+
+<!--网页主体 -->
+<div class="container page-header">
+    <div class="subtitle-nav">当前位置：<a href="/covid19_table/article">参考文献</a> > 资源详情</div>
+    <h1>{{ curr_article.title }}</h1>
+    <div class="article-detail-info">
+        <span>主要作者：{{ author }}</span>
+        <span>发布时间：{{ publish_date }}</span>
+    </div>
+</div>
+<div class="container page-body">
+        <div class="body-main inner_abstract">
+        <h3 style="margin-top: 0px;">Abstract</h3>
+            <div class="article-abstract-cage">
+                {% for section in section_list %}
+                <p>{{ section }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="article-detail-card">
+            <div><p>原文标题：</p><span>{{ curr_article.title }}</span></div>
+            <div><p>来源机构：</p><a href="{{ curr_article.source_url }}" target="_blank">{{ curr_article.source }}</a></div>
+            <div><p>原文链接：</p><a href="{{ curr_article.url }}" target="_blank">{{ curr_article.url }}</a></div>
+        </div>
+</div>
+<!--网页尾部 -->
+{% include 'footer.html' %}

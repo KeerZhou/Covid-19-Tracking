@@ -1,0 +1,489 @@
+*,ul,li,p,div,span{margin: 0;padding: 0}
+ul{list-style: none}
+@font-face {
+	font-family:Avenir Next;
+	src: url('../fonts/AvenirNextRoundedW01-De.ttf');
+}
+@font-face {
+	font-family:msyh;
+	src: url('../fonts/msyh.ttc');
+}
+.clear{clear: both}
+a{
+    color: #000;
+    text-decoration: none
+}
+a:hover{
+    color: #337ab7;
+    text-decoration: none
+}
+/* Header Styles
+   ============================================ */
+
+.l_left{
+    float: left;
+}
+.r_right{
+    float: right;
+}
+*{
+    font-size: 100%;
+}
+
+.index_nav{
+    height: 60px;
+    background-color: #0052a7;
+}
+.index_nav ul a{
+    color: #fff;
+    text-decoration: none
+}
+.index_nav ul li{
+    font-size: 17px;
+    font-weight: 800;
+    color: #fff;
+    opacity: 0.8;
+    padding-top:18px;
+    padding-left:10px;
+    padding-right:10px;
+    padding-bottom:5px;
+    cursor: pointer;
+    /*text-shadow:0 6px 8px #00225b */
+}
+.index_nav ul .l_left{margin-left: 3%}
+.index_nav ul .r_right{margin-right: 3%}
+.index_nav ul li:hover{opacity: 1}
+
+.index_left{background-color: rgba(2,8,23,0.54);width: 626px;height: 790px;margin: 39px 0 0 19px;border-radius: 10px;position: relative}
+.left_nav{position: absolute;top:1px;left:137px;width: 354px;height: 27px;}
+.left_line1{border-radius: 10px;border: 1px #0174f5 solid;margin: 1px;height: 788px}
+.left_line2{margin: 1px;border-radius: 9px;border: 2px #0b7ff3 solid;height: 784px;padding: 0 8px}
+.left_top{height: 33%}
+
+.left_top_left{width: 50%;height: 70%;margin-top: 42px;color: #fff}
+.left_top_left p{line-height: 32px;font-size: 16px ;margin-left: 14px }
+
+/* Body Styles
+   ============================================ */
+.inner{
+    height: 920px;
+    width: 100%;
+    margin:0 auto;
+    margin-top: 35px;
+    margin-bottom: 45px;
+    white-space: nowrap;
+    /*background: url(../img/background1.png);*/
+    background-color: #a3d4e8;
+}
+.inner_predict{
+    background-color: #eaf4f9;
+    height: 900px;
+}
+.inner_predict h2{
+    position: relative;
+    left: 60px;
+    top: 20px;
+    font-family:'msyh';
+    font-weight: bold;
+    width: 400px;
+}
+.inner_article{
+    height: 1500px;
+}
+.inner_news{
+    height: 1800px;
+}
+.inner_research{
+    height: 1000px;
+}
+.inner_assessment{
+    height: 1000px;
+}
+.inner_assessment h4{
+    margin-bottom: 20px;
+}
+/*.inner_abstract{*/
+    /*height: 800px;*/
+/*}*/
+.subtitle-nav{
+    font-family:'msyh';
+}
+.subtitle-nav a {
+    text-decoration: none;
+    color: #000000;
+}
+.col-md-2{
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.col-md-10{
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.page-body{
+    margin-top: 30px;
+    width: 1300px;
+}
+.dataAllBorder01{
+    width: 100%;
+    height: 350px;
+    border-radius: 10px;
+    border: 1px #0174f5 solid;
+    background-color: #aaf0f5;
+    padding: 1px;
+    box-sizing: border-box;
+}
+
+.dataAllBorder01 p:nth-child(odd){
+    font-size:15px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+    font-family:'msyh'
+}
+
+.dataAllBorder01 p:nth-child(even){
+    color: #E60000;
+    font-size:33px;
+    text-align: center;
+    font-weight: bold;
+    padding-bottom: 10px;
+    font-family:'Avenir Next'
+}
+
+
+.dataAllBorder01 p:nth-child(6){
+    color: #000000;
+}
+
+
+.dataAllBorder01 p:nth-child(8){
+    color: #000000;
+}
+
+.dataAllBorder01_time{
+    width: 100%;
+    height: 45px;
+    border-radius: 10px;
+    border: 1px #0174f5 solid;
+    background-color: #aaf0f5;
+    padding: 1px;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+.dataAllBorder01_time p{
+    font-size:15px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+    font-family:'msyh'
+}
+
+.dataAllBorder02{
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    border: 1px #0174f5 solid;
+    padding: 1px;
+    box-sizing: border-box;
+}
+
+.dataAllBorder03{
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    border: 1px #0174f5 solid;
+    background-color: #aaf0f5;
+    padding: 1px;
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+.dataAllBorder03 p:nth-child(1){
+    font-size:15px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.order{
+    margin-bottom: 10px;
+    margin-left: 8px;
+}
+
+.order_country{
+    font-size:18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #454545;
+    font-family:'Avenir Next'
+}
+
+.order_num{
+    font-size:20px;
+    font-weight: bold;
+    color: #E60000;
+    float: right;
+    font-family:'Avenir Next'
+}
+
+.dataAllBorder03::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 1px;
+}
+
+.dataAllBorder03::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: #7ec7ff;
+}
+
+.dataAllBorder03::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    background: #EDEDED;
+}
+
+.cage_cl{
+    /*background-color: rgba(2, 39, 106, 0.15);*/
+    background-color: rgba(255, 255, 255, 0.5)
+}
+
+.timelist{
+    display: inline-block;
+}
+
+.timelist ul li{
+    display:inline;
+}
+
+.down_cage_title{
+    font-size:20px;
+    text-align: left;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-left: 15px;
+    display:inline-block;
+    vertical-align: top;
+    font-family:'msyh'
+}
+.down_cage select{
+    height: 25px;
+    width: 100px;
+    border-radius: 6px;
+    border: 1px #0174f5 solid;
+    background-color: rgba(255, 255, 255, 0.36);
+    margin-top: 13px;
+    margin-left: 15px;
+    display: inline-block;
+}
+
+/* 下拉按钮样式 */
+.dropbtn {
+    background-color: rgba(255, 255, 255, 0.36);
+    color: black;
+    height: 30px;
+    width: 110px;
+    border-radius: 6px;
+    border: 1px #0174f5 solid;
+    margin-top: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    padding-top: 5px;
+    display: inline-block;
+}
+
+.dropbtntext{
+    position: relative;
+    left: 30px;
+    font-family:'msyh';
+}
+.dropbtnicon {
+    display: inline-block;
+	width: 0;
+	height: 0;
+	border-width: 6px 6px 0px;
+	border-style: solid;
+	border-color: #0a2f60 transparent transparent;
+    float: right;
+	margin: 6px 6px 6px 6px;
+    font-family:'msyh'
+}
+/* 容器 <div> - 需要定位下拉内容 */
+.dropdown {
+    position: relative;
+    left: 30px;
+    display: inline-block;
+}
+
+/* 下拉内容 (默认隐藏) */
+.dropdown-content {
+    display: none;
+    cursor: pointer;
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.36);
+    min-width: 110px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 6px;
+    height: 200px;
+    overflow: auto;
+    z-index: 100;
+}
+.dropdown-content::-webkit-scrollbar{
+    display: none;
+}
+
+/* 下拉菜单的链接 */
+.dropdown-content li {
+    color: black;
+    padding: 12px 0px 12px 30px;
+    text-decoration: none;
+    font-family:'msyh';
+    font-size: 15px;
+    display: block;
+}
+
+/* 鼠标移上去后修改下拉菜单链接颜色 */
+.dropdown-content li:hover {background-color: rgba(223, 223, 223, 0.72)
+}
+
+/* 当下拉内容显示后修改下拉按钮的背景颜色 */
+.dropdown:hover .dropbtn {
+    background-color: rgba(170, 170, 170, 0.36);
+}
+.time-sort-btn{
+    background-color: rgba(255, 255, 255, 0.36);
+    color: black;
+    height: 20px;
+    width: 90px;
+    border-radius: 0px;
+    border: none;
+    margin-top: 0px;
+    font-size: 13px;
+    cursor: pointer;
+    padding-top: 0px;
+    display: inline-block;
+}
+.dropdown:hover .time-sort-btn {
+    background-color: rgba(255, 255, 255, 0.36);
+}
+.model-dropdown{
+    position: relative;
+    left: 5px;
+    margin-right: 30px;
+}
+.model-dropdown button{
+    width: 100px;
+}
+.news-time-sort{
+    left: 700px;
+}
+.time-sort{
+    left: 500px;
+}
+.time-sort-text{
+    position: relative;
+    left: 5px;
+}
+.time-sort-list{
+    display: none;
+    cursor: pointer;
+    position: absolute;
+    background-color: rgb(249, 249, 249);
+    box-shadow: none;
+    border-radius: 6px;
+    min-width: 150px;
+    overflow: auto;
+    z-index: 100;
+}
+.time-sort-list li{
+    color: black;
+    padding: 5px 0px 5px 10px;
+    text-decoration: none;
+    font-size: 13px;
+    display: block;
+}
+.time-sort-list li:hover {background-color: rgba(223, 223, 223, 0.72)
+}
+.news-source{
+    left: 670px;
+}
+
+.selectbtn-day{
+    display: none;
+    position: relative;
+    left: 55px;
+}
+.selectbtn-day span{
+    padding: 5px 15px;
+    font-family:'msyh';
+    border: 2px rgba(0, 0, 0, 0.17) solid;
+    cursor: pointer;
+    font-size:15px;
+}
+
+.selectbtn-day span:hover{
+    border: 2px rgba(0, 0, 0, 0.55) solid;
+}
+
+
+/* Footer Styles
+   ============================================ */
+.index_footer{
+    background-color: #0052a7;
+}
+.footer_contain{
+    display: inline-block;
+}
+.footer_contact img{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.footer_link{
+    position: relative;
+    left: 50px;
+    vertical-align: top;
+}
+.footer_link a{
+    display: block;
+    color: #e9e9e9;
+    margin-top: 7px;
+    margin-bottom: 7px;
+}
+.footer_up{
+    border-bottom: 1px #6c95bd solid;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+}
+.footer_down p{
+    text-align: center;
+    font-size: 12px;
+}
+#footer-wrap{
+	background:url('../img/footer-bg.jpg');
+	margin:60px 0 0 0;
+}
+#footer{
+	padding:20px 0;
+}
+#footer h2{
+    font-family:'msyh';
+    margin-top: 10px;
+	font-size:20px;
+	color: #ffffff;
+}
+#footer img{
+	vertical-align:middle;
+	margin-right:5px;
+}
+#footer p, #footer li{
+	font-size:13px;
+	color: #e9e9e9;
+	list-style:none;
+}

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+
+    </script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="../static/js/echarts.min.js"></script>
+    <script src="../static/js/world.js"></script>
+
+    <link href="../static/css/base.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/layout.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <!-- 网页头部 -->
+    {% include 'header.html' %}
+
+    <!--网页主体 -->
+    <div class="inner">
+        <div class="left_cage">
+            <div class="dataAllBorder01 cage_cl">
+                <p>全球累计确诊人数</p>
+                <p>{{ confirmed_sum }}</p>
+                <p>全球新增确诊人数</p>
+                <p>{{ confirmed_increase }}</p>
+                <p>全球累计死亡人数</p>
+                <p>{{ death_sum }}</p>
+                <p>全球新增死亡人数</p>
+                <p>{{ death_increase }}</p>
+            </div>
+            <div class="dataAllBorder01_time cage_cl">
+                <p>最新更新日期：{{ updatetime }}</p>
+            </div>
+        </div>
+
+        <div class="center_cage">
+            <div class="dataAllBorder02 cage_cl" id="map">
+
+            </div>
+        </div>
+
+        <div class="right_cage">
+            <div class="dataAllBorder03 cage_cl">
+                <p style="font-family: 'msyh'">各国新增确诊人数</p>
+               {% for key, value in confirmed_increase_order.items %}
+                   <div class="order">
+                        <span class="order_country">{{ key }}</span><span class="order_num">{{ value }}</span><br>
+                   </div>
+               {% endfor %}
+
+            </div>
+        </div>
+
+        <div class="down_cage cage_cl" id="charts_background">
+            <div class="down_cage_title">部分国家疫情状况</div>
+{#            <select>#}
+{#              <option value ="Globe">全球</option>#}
+{#              <option value ="USA">美国</option>#}
+{#              <option value="UK">英国</option>#}
+{#              <option value="BRA">巴西</option>#}
+{#            </select>#}
+            <div class="dropdown">
+                <div class="dropbtn"><span id="country_select_name" class="dropbtntext">全球</span><span class="dropbtnicon"></span></div>
+                <div class="dropdown-content" id="country_select_list">
+                  <ul>
+                      <li>全球</li>
+                      <li>英国</li>
+                      <li>美国</li>
+                      <li>中国</li>
+                      <li>巴西</li>
+                      <li>印度</li>
+                      <li>俄罗斯</li>
+                  </ul>
+                </div>
+            </div>
+
+            <div id="select_day_btn" class="selectbtn-day"><span id="select_day_btn_90">近90天</span><span id="select_day_btn_14">近14天</span></div>
+
+            <div id="global_line" class="sitn_long_cage1"></div>
+            <div id="country_line" class="sitn_long_cage2">
+                <div id="country_line_accu" class="sitn_left_cage"></div>
+                <div id="country_line_incr" class="sitn_center_cage"></div>
+                <div id="country_line_deadincr" class="sitn_right_cage"></div>
+            </div>
+        </div>
+    </div>
+
+    <!--网页尾部 -->
+    {% include 'footer.html' %}
+</body>
+<script type="text/javascript">
+    //图表项目数据
+	var fp_val = {
+        '2020-03': {{ confirmed_data_list0315|safe }},
+        '2020-04': {{ confirmed_data_list0415|safe }},
+        '2020-05': {{ confirmed_data_list0515|safe }},
+        '2020-06': {{ confirmed_data_list0615|safe }},
+        '2020-07': {{ confirmed_data_list0715|safe }},
+        '2020-08': {{ confirmed_data_list0815|safe }},
+        '2020-09': {{ confirmed_data_list0915|safe }},
+        '2020-10': {{ confirmed_data_list1015|safe }},
+        '2020-11': {{ confirmed_data_list1115|safe }},
+        '2020-12': {{ confirmed_data_list1215|safe }},
+        '2021-01': {{ confirmed_data_list210115|safe }},
+        '2021-02': {{ confirmed_data_list210215|safe }},
+        '2021-03': {{ confirmed_data_list210301|safe }},
+    };
+    var timeLineData = ['2020-03', '2020-04', '2020-05', '2020-06', '2020-07', '2020-08', '2020-09', '2020-10', '2020-11', '2020-12', '2021-01', '2021-02', '2021-03'];
+</script>
+<script type="text/javascript" src="../static/js/world_map.js"></script>
+
+<script>
+        //获取国家确诊人数增长情况
+        //图表项目数据
+        var country_grow_data = {
+            '英国': {{ UK_confirmed|safe }},
+            '美国': {{ USA_confirmed|safe }},
+            '中国': {{ CHN_confirmed|safe }},
+            '印度': {{ IND_confirmed|safe }},
+            '意大利': {{ ITA_confirmed|safe }},
+            '巴西': {{ BRA_confirmed|safe }},
+            '俄罗斯': {{ RUS_confirmed|safe }},
+        };
+        var country_grow_name = ['英国','美国','中国','印度','意大利','巴西','俄罗斯'];
+
+        //echarts初始化
+        var mychart = echarts.init(document.getElementById("global_line"));
+        //配置项和数据
+        var option = {
+            baseOption: {
+                //标题
+                title: {
+                    text: '全球疫情走势图',
+                    left: 'center',
+                    top: 'top'
+                    {#subtext:'副标题'#}
+                },
+                tooltip: {},
+                legend: {
+                    type: 'scroll',
+                    orient: 'vertical',
+                    data: country_grow_name,
+                    textStyle:{
+                        fontSize:16,
+                        fontFamily:'msyh'
+                    },
+                    left: 'right',
+                    top: 'top'
+                },
+                xAxis: {
+                    name:'天数',
+                    splitLine:{show: false},
+                    nameTextStyle:{
+                        fontSize: 15,
+                        fontWeight: 'bold',
+                        fontFamily:'msyh'
+                    },
+                    type:'category',
+                    axisLabel:{
+                        interval:30,
+                        showMaxLabel: true,
+                        rotate:35,
+                        textStyle: {
+                          fontSize: 14,
+                          fontWeight: 'bold',
+                        }
+                    },
+                    {#data:['2020-01-31','2020-02-01','星期三','星期四','星期五','星期六','星期日',]#}
+                    data:{{ UK_date|safe }}
+                },
+                yAxis: {
+                    name:'感染人数',
+                    splitLine:{
+                        show: true,
+                        lineStyle:{
+                           color: ['#315070'],
+                           width: 1,
+                           type: 'dashed'
+                      }
+                    },
+                    nameTextStyle:{
+                        fontSize: 15,
+                        fontWeight: 'bold',
+                        fontFamily:'msyh'
+                    },
+                    axisLabel:{
+                        textStyle: {
+                          fontSize : 14,
+                          fontWeight: 'bold',
+                        }
+                    }
+                },
+                series: []
+            },
+            options: [],
+        };
+        for (var i = 0; i < country_grow_name.length; i++) {
+            //option.baseOption.legend.data.push(timeLineData[i]);
+            option.baseOption.series.push({
+                name: country_grow_name[i],
+                type: 'line',
+                data: country_grow_data[country_grow_name[i]],
+                symbolSize: 3,
+                itemStyle: {
+                            normal: {
+                                lineStyle:{
+                                    width:3//设置线条粗细
+                                }
+                            }
+                        }
+            })
+        }
+        mychart.setOption(option)
+
+</script>
+
+
+
+<script>
+    //获取国家确诊人数增长情况
+    //图表项目数据
+    var country_accu_data = {
+        'date_90': {{ USA_date_90|safe }},
+        'date_14': {{ USA_date_14|safe }},
+        '美国_90': {{ USA_confirmed_accu_90|safe }},
+        '美国_14': {{ USA_confirmed_accu_14|safe }},
+
+        '英国_90': {{ UK_confirmed_accu_90|safe }},
+        '英国_14': {{ UK_confirmed_accu_14|safe }},
+
+        '中国_90': {{ CHN_confirmed_accu_90|safe }},
+        '中国_14': {{ CHN_confirmed_accu_14|safe }},
+
+        '巴西_90': {{ BRA_confirmed_accu_90|safe }},
+        '巴西_14': {{ BRA_confirmed_accu_14|safe }},
+
+        '印度_90': {{ IND_confirmed_accu_90|safe }},
+        '印度_14': {{ IND_confirmed_accu_14|safe }},
+
+        '俄罗斯_90': {{ RUS_confirmed_accu_90|safe }},
+        '俄罗斯_14': {{ RUS_confirmed_accu_14|safe }},
+    };
+    var country_accu_name = ['全球','中国','美国','英国','巴西','印度','俄罗斯'];
+
+
+    //获取国家确诊人数增长情况
+    //图表项目数据
+    var country_incr_data = {
+        'date_90': {{ USA_date_90|safe }},
+        'date_14': {{ USA_date_14|safe }},
+        '美国_90': {{ USA_confirmed_incr_90|safe }},
+        '美国_14': {{ USA_confirmed_incr_14|safe }},
+
+        '英国_90': {{ UK_confirmed_incr_90|safe }},
+        '英国_14': {{ UK_confirmed_incr_14|safe }},
+
+        '中国_90': {{ CHN_confirmed_incr_90|safe }},
+        '中国_14': {{ CHN_confirmed_incr_14|safe }},
+
+        '巴西_90': {{ BRA_confirmed_incr_90|safe }},
+        '巴西_14': {{ BRA_confirmed_incr_14|safe }},
+
+        '印度_90': {{ IND_confirmed_incr_90|safe }},
+        '印度_14': {{ IND_confirmed_incr_14|safe }},
+
+        '俄罗斯_90': {{ RUS_confirmed_incr_90|safe }},
+        '俄罗斯_14': {{ RUS_confirmed_incr_14|safe }},
+    };
+    var country_incr_name = ['全球','中国','美国','英国','巴西','印度','俄罗斯'];
+
+
+    //获取国家死亡人数增长情况
+    //图表项目数据
+    var country_dead_data = {
+        'date_90': {{ USA_date_90|safe }},
+        'date_14': {{ USA_date_14|safe }},
+        '美国_90': {{ USA_dead_incr_90|safe }},
+        '美国_14': {{ USA_dead_incr_14|safe }},
+
+        '英国_90': {{ UK_dead_incr_90|safe }},
+        '英国_14': {{ UK_dead_incr_14|safe }},
+
+        '中国_90': {{ CHN_dead_incr_90|safe }},
+        '中国_14': {{ CHN_dead_incr_14|safe }},
+
+        '巴西_90': {{ BRA_dead_incr_90|safe }},
+        '巴西_14': {{ BRA_dead_incr_14|safe }},
+
+        '印度_90': {{ IND_dead_incr_90|safe }},
+        '印度_14': {{ IND_dead_incr_14|safe }},
+
+        '俄罗斯_90': {{ RUS_dead_incr_90|safe }},
+        '俄罗斯_14': {{ RUS_dead_incr_14|safe }},
+    };
+    var country_dead_name = ['全球','中国','美国','英国','巴西','印度','俄罗斯'];
+
+</script>
+<script type="text/javascript" src="../static/js/index_charts.js"></script>
+
+</html>

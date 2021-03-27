@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>预测系统</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+    </script>
+    <script src="../static/js/jquery-3.5.1.min.js"></script>
+    <link href="../static/css/base.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/layout.css" rel="stylesheet" type="text/css" />
+    <script src="../static/js/echarts.min.js"></script>
+</head>
+<body>
+    <!-- 网页头部 -->
+    {% include 'header.html' %}
+
+    <!--网页主体 -->
+    <div class="inner inner_predict">
+        <h2>感染模型分析</h2>
+        <div class="container page-body">
+            <div>
+                <div class="col-md-2 model_name_cage">
+                    <ul id="model_name_list">
+                        <li>SIR模型</li>
+                        <li>SEIR模型</li>
+                        <li>RLIM模型</li>
+                    </ul>
+                </div>
+                <div class="col-md-10">
+                    <div class="model_describe_cage">
+                        <ul>
+                            <li id="model_describe_btn">模型描述</li>
+                            <li id="model_simulation_btn">模拟</li>
+                        </ul>
+                    </div>
+                    <div class="model_detail_cage">
+                        <div id="model_detail_list" class="model_detail">
+                            <div id="SIR_detail">
+                                SIR模型包括三种仓室：易感者、感染者和移出者，模型如下图所示。<br>
+                                <img src="../static/img/SIR_model.png" style="height: 110px;width: 500px"><br>
+                                <p>各仓室的定义如下：</p><br>
+                                <ul>
+                                    <li>易感者（S）：易感者是指还没有接触过病毒，因此对病毒没有任何免疫力的普通人。当易感者通过感染者接触病毒后，有一定的概率变成感染者。</li><br>
+                                    <li>感染者（I）：感染者具有临床患病特征以及传染性，可以将病毒传染给密切接触的易感者。</li><br>
+                                    <li>移出者（R）：移出者包括死亡者和因病愈而具有免疫力的人。</li><br>
+                                </ul>
+                                <p>每个仓室的推导公式如下所示：</p><br>
+                                <img src="../static/img/SIR_formula.png" style="height: 150px;width: 150px;position: relative;left: 10px;margin-bottom: 5px;"><br>
+                                <p>其中S是易感人群、I是感染者、R是移出者、N是人口总数。参数β控制病毒传播的概率，γ是移出概率。</p><br>
+                            </div>
+                            <div id="SEIR_detail">
+                                SEIR模型包括四种仓室：易感者、携带者、感染者和移出者，模型如下图所示。<br>
+                                <img src="../static/img/SEIR_model.png" style="height: 110px;width: 650px"><br>
+                                <p>各仓室的定义如下：</p><br>
+                                <ul>
+                                    <li>易感者（S）：易感者是指还没有接触过病毒，因此对病毒没有任何免疫力的普通人。当易感者通过感染者接触病毒后，有一定的概率变成携带者。</li><br>
+                                    <li>携带者（E）：携带者是指携带病毒，但并不具有传染性的人群。</li><br>
+                                    <li>感染者（I）：感染者具有临床患病特征以及传染性，可以将病毒传染给密切接触的易感者。</li><br>
+                                    <li>移出者（R）：移出者包括死亡者和因病愈而具有免疫力的人。</li><br>
+                                </ul>
+                                <p>每个仓室的推导公式如下所示：</p><br>
+                                <img src="../static/img/SEIR_formula.png" style="height: 200px;width: 150px;position: relative;left: 10px;margin-bottom: 5px;"><br>
+                                <p>其中S是易感人群、I是感染者、E是携带者、R是移出者、N是人口总数。参数β控制病毒传播的概率，λ是移出概率，γ是携带者变成感染者的概率。</p><br>
+                            </div>
+                            <div id="RLIM_detail">
+                                <p>RLIM(Recursive Latency Infection Model)模型是根据相关研究和事实依据改进的一个模型。</p><br>
+                                <p>在RLIM中，根据我们的观察并从新闻报道中得出的事实分析，我们在传输环路中添加一个符号ω。
+                                    ω代表一个从COVID-19感染中恢复过来的特定患者在一定时期内，通过呼吸测试或抗体测试确定再次作为病毒携带者的概率。
+                                    根据此定义，状态R和状态I之间使用ω，将一定数量的恢复组传输到感染组,模型如下图所示。</p><br>
+                                <img src="../static/img/RLIM_model.png" style="height: 210px;width: 350px"><br>
+                                <p>各仓室的定义如下：</p><br>
+                                <ul>
+                                    <li>易感者（S）：易感者是指还没有接触过病毒，因此对病毒没有任何免疫力的普通人。当易感者通过感染者接触病毒后，有一定的概率变成携带者。</li><br>
+                                    <li>携带者（E）：携带者是指携带病毒，但并不具有传染性的人群。</li><br>
+                                    <li>感染者（I）：感染者具有临床患病特征以及传染性，可以将病毒传染给密切接触的易感者。</li><br>
+                                    <li>康复者（R）：康复者包括因病愈而具有免疫力的人。</li><br>
+                                    <li>死亡者（D）：死亡者包括因病导致死亡的人。</li><br>
+                                    <li>复阳者（SI）：移出后通过呼吸测试或抗体测试确定再次作为病毒携带者的人。</li><br>
+                                </ul>
+                                <p>每个仓室的推导公式如下所示：</p><br>
+                                <img src="../static/img/SEIR_formula.png" style="height: 250px;width: 190px;position: relative;left: 10px;margin-bottom: 5px;"><br>
+                                <p>其中S是易感人群、I是感染者、E是携带者、R是康复者、D是死亡者、N是人口总数。参数β控制病毒传播的概率，λ是恢复概率，γ是携带者变成感染者的概率，κ是死亡率，ω是复阳率。</p><br>
+                            </div>
+                        </div>
+                        <div id="model_simulation" class="model-simulation-cage">
+                            <div class="model-choose-cage">
+                                <span>传染模型：</span>
+                                <div class="dropdown model-dropdown">
+                                  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    <span id="model_current">SIR模型</span>
+                                    <span class="caret"></span>
+                                  </button>
+                                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="model_select_list">
+                                    <li><a>SIR模型</a></li>
+                                    <li><a>SEIR模型</a></li>
+                                    <li><a>RLIM模型</a></li>
+                                  </ul>
+                                </div>
+
+                                <span>人口：</span>
+                                <div class="dropdown model-dropdown">
+                                  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    <span id="pop_current">100000</span>
+                                    <span class="caret"></span>
+                                  </button>
+                                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="pop_select_list">
+                                      <li><a>50000</a></li>
+                                      <li><a>100000</a></li>
+                                      <li><a>200000</a></li>
+                                  </ul>
+                                </div>
+                                <button class="simulate-btn" onclick="draw()">开始模拟</button>
+                                <br>
+                                <div style="position: relative;top:25px;left: 2px;">
+                                    <span>传染率：</span>
+                                    <div class="dropdown model-dropdown">
+                                      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <span id="beta_current">0.3</span>
+                                        <span class="caret"></span>
+                                      </button>
+                                      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="beta_select_list">
+                                          <li><a>0.3</a></li>
+                                          <li><a>0.4</a></li>
+                                          <li><a>0.5</a></li>
+                                      </ul>
+                                    </div>
+
+                                    <span>恢复率：</span>
+                                    <div class="dropdown model-dropdown">
+                                      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <span id="gamma_current">0.05</span>
+                                        <span class="caret"></span>
+                                      </button>
+                                      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="gamma_select_list">
+                                        <li><a>0.07</a></li>
+                                        <li><a>0.05</a></li>
+                                        <li><a>0.03</a></li>
+                                      </ul>
+                                    </div>
+                                    <div class="args-cage" id="lambd_cage">
+                                        <span>发病率：</span>
+                                        <div class="dropdown model-dropdown">
+                                          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <span id="lambd_current">0.5</span>
+                                            <span class="caret"></span>
+                                          </button>
+                                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="lambd_select_list">
+                                            <li><a>0.7</a></li>
+                                            <li><a>0.5</a></li>
+                                            <li><a>0.3</a></li>
+                                          </ul>
+                                        </div>
+                                    </div>
+                                    <div class="args-cage" id="omega_cage">
+                                        <span>复阳率：</span>
+                                        <div class="dropdown model-dropdown">
+                                          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <span id="omega_current">0.05</span>
+                                            <span class="caret"></span>
+                                          </button>
+                                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="omega_select_list">
+                                            <li><a>0.1</a></li>
+                                            <li><a>0.05</a></li>
+                                            <li><a>0.01</a></li>
+                                          </ul>
+                                        </div>
+                                    </div>
+                                    <div class="args-cage" id="kappa_cage">
+                                        <span>死亡率：</span>
+                                        <div class="dropdown model-dropdown">
+                                          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <span id="kappa_current">0.034</span>
+                                            <span class="caret"></span>
+                                          </button>
+                                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="kappa_select_list">
+                                            <li><a>0.05</a></li>
+                                            <li><a>0.034</a></li>
+                                            <li><a>0.01</a></li>
+                                          </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="SIR_incr" class="simulate-incr"></div>
+                            <p id="test"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+<script>
+    var model_name_list = document.getElementById("model_name_list").getElementsByTagName("li");
+    var model_detail_list = document.getElementById("model_detail_list").getElementsByTagName("div");
+    var model_simulation_btn = document.getElementById("model_simulation_btn");
+    var model_describe_btn = document.getElementById("model_describe_btn");
+    var RLIM_detail = document.getElementById("RLIM_detail");
+    var model_simulation = document.getElementById("model_simulation");
+
+    model_name_list[0].style.backgroundColor = '#FFFFFF';
+    for(var i=0; i<model_name_list.length;i++){
+        model_name_list[i].index = i;
+        model_name_list[i].onclick = function () {
+            for(var j=0; j<model_name_list.length; j++){
+                model_name_list[j].style.backgroundColor = '#e2e2e2';
+                model_detail_list[j].style.display = 'none';
+                model_describe_btn.style.backgroundColor = '#FFFFFF';
+                model_simulation_btn.style.backgroundColor = '#e2e2e2';
+                model_simulation.style.display = 'none';
+            }
+           this.style.backgroundColor = '#FFFFFF';
+           model_detail_list[this.index].style.display = 'block';
+        };
+
+    }
+    model_simulation_btn.onclick = function () {
+        model_simulation_btn.style.backgroundColor = '#FFFFFF';
+        model_describe_btn.style.backgroundColor = '#e2e2e2';
+        RLIM_detail.style.display = 'none';
+        model_simulation.style.display = 'block';
+        for(var j=0; j<model_detail_list.length; j++){
+            model_detail_list[j].style.display = 'none';
+        }
+    }
+    model_describe_btn.onclick = function () {
+        model_simulation_btn.style.backgroundColor = '#e2e2e2';
+        model_describe_btn.style.backgroundColor = '#FFFFFF';
+        RLIM_detail.style.display = 'block';
+        model_simulation.style.display = 'none';
+    }
+</script>
+
+<script>
+    var varray = new Array(121);
+    for(var index=0;index<=120;index++){
+        varray[index] = index;
+    }
+    var incr_chart = echarts.init(document.getElementById('SIR_incr'));
+    incr_chart.setOption({
+        title: {
+            text: '感染人数变化',
+            left: 'center',
+            top: 'top',
+            textStyle:{
+                fontSize:16
+            }
+        },
+        legend: {
+            left: 'right',
+            top: 'top'
+        },
+
+        grid: {
+            top: '5%',
+            left: '3%',
+            right: '8%',
+            bottom: '3%',
+            containLabel: true
+        },
+
+        tooltip: {
+          trigger: 'axis'
+        },
+
+        xAxis: {
+          name: '天数',
+          type: 'category',
+          axisLine: {
+            lineStyle: {
+              // 设置x轴颜色
+              color: '#000000'
+            }
+          },
+          // 设置X轴数据旋转倾斜
+          axisLabel: {
+            rotate: 30, // 旋转角度
+            interval: 5  //设置X轴数据间隔几个显示一个，为0表示都显示
+            },
+          // boundaryGap值为false的时候，折线第一个点在y轴上
+          boundaryGap: false,
+          data: varray,
+        },
+
+        yAxis: {
+          name: '人数',
+          type: 'value',
+          min:0, // 设置y轴刻度的最小值
+          max:2000,  // 设置y轴刻度的最大值
+          splitNumber:9,  // 设置y轴刻度间隔个数
+          axisLine: {
+            lineStyle: {
+              // 设置y轴颜色
+              color: '#000000'
+            }
+          },
+        },
+        series: [
+          {
+            name: '感染人数',
+            data: [],
+            type: 'line',
+            // 设置小圆点消失
+            // 注意：设置symbol: 'none'以后，拐点不存在了，设置拐点上显示数值无效
+            symbol: 'none',
+            // 设置折线弧度，取值：0-1之间
+            smooth: 0.5,
+          },
+
+        ],
+        color: ['#ee6b38']
+    });
+
+    var model = $('#model_current').text();
+    var pop = $('#pop_current').text();
+    var beta = $('#beta_current').text();
+    var gamma = $('#gamma_current').text();
+    var lambd = $('#lambd_current').text();
+    var omega = $('#omega_current').text();
+    var kappa = $('#kappa_current').text();
+    $.ajax({
+           url:'simulation',
+           dataType:'JSON',
+           type:'GET',
+           data:{
+               model:model,
+               pop:pop,
+               beta:beta,
+               gamma:gamma,
+               lambd:lambd,
+               omega:omega,
+               kappa:kappa,
+           },
+           success:function (res) {
+               //document.getElementById("test").innerHTML = res;
+               var max = res['incr'][0];
+               for (var i = 0; i < res['incr'].length - 1; i++) {
+                    max = max < res['incr'][i+1] ? res['incr'][i+1] : max
+               }
+               incr_chart.setOption({
+                   yAxis:[{
+                      min:0,
+                      max:max
+                   }],
+                   series: [{
+                       data:res['incr']
+                   }]
+               });
+           }
+        });
+
+
+    //模拟按钮
+    var draw = function () {
+        var model = $('#model_current').text();
+        var pop = $('#pop_current').text();
+        var beta = $('#beta_current').text();
+        var gamma = $('#gamma_current').text();
+        var lambd = $('#lambd_current').text();
+        var omega = $('#omega_current').text();
+        var kappa = $('#kappa_current').text();
+        $.ajax({
+           url:'simulation',
+           dataType:'JSON',
+           type:'GET',
+           data:{
+               model:model,
+               pop:pop,
+               beta:beta,
+               gamma:gamma,
+               lambd:lambd,
+               omega:omega,
+               kappa:kappa,
+           },
+           success:function (res) {
+               //document.getElementById("test").innerHTML = res;
+               var max = res['incr'][0];
+               for (var i = 0; i < res['incr'].length - 1; i++) {
+                    max = max < res['incr'][i+1] ? res['incr'][i+1] : max
+               }
+               incr_chart.setOption({
+                   yAxis:[{
+                      min:0,
+                      max:max
+                   }],
+                   series: [{
+                       data:res['incr']
+                   }]
+               });
+           }
+        });
+    }
+</script>
+
+<script>
+    $('.dropdown-toggle').dropdown();
+    var model_current = document.getElementById("model_current");
+    var beta_current = document.getElementById("beta_current");
+    var gamma_current = document.getElementById("gamma_current");
+    var pop_current = document.getElementById("pop_current");
+    var lambd_current = document.getElementById("lambd_current");
+    var omega_current = document.getElementById("omega_current");
+    var kappa_current = document.getElementById("kappa_current");
+    var model_select_list = document.getElementById("model_select_list").getElementsByTagName("li");
+    var beta_select_list = document.getElementById("beta_select_list").getElementsByTagName("li");
+    var gamma_select_list = document.getElementById("gamma_select_list").getElementsByTagName("li");
+    var pop_select_list = document.getElementById("pop_select_list").getElementsByTagName("li");
+    var lambd_select_list = document.getElementById("lambd_select_list").getElementsByTagName("li");
+    var omega_select_list = document.getElementById("omega_select_list").getElementsByTagName("li");
+    var kappa_select_list = document.getElementById("kappa_select_list").getElementsByTagName("li");
+    var lambd_cage = document.getElementById("lambd_cage");
+    var omega_cage = document.getElementById("omega_cage");
+    var kappa_cage = document.getElementById("kappa_cage");
+    for(var i = 0; i < model_select_list.length;i++){
+        model_select_list[i].onclick = function () {
+            model_current.innerHTML = this.innerHTML;
+            if(model_current.innerText == 'SIR模型'){
+                lambd_cage.style.display = 'none';
+                omega_cage.style.display = 'none';
+                kappa_cage.style.display = 'none';
+                draw();
+            }else if(model_current.innerText == 'SEIR模型'){
+                lambd_cage.style.display = 'inline-block';
+                omega_cage.style.display = 'none';
+                kappa_cage.style.display = 'none';
+                draw();
+            }else if(model_current.innerText == 'RLIM模型'){
+                lambd_cage.style.display = 'inline-block';
+                omega_cage.style.display = 'inline-block';
+                kappa_cage.style.display = 'inline-block';
+                draw();
+            }
+        };
+    }
+    for(var i = 0; i < beta_select_list.length;i++){
+        beta_select_list[i].onclick = function () {
+            beta_current.innerHTML = this.innerHTML;
+        };
+    }
+    for(var i = 0; i < gamma_select_list.length;i++){
+        gamma_select_list[i].onclick = function () {
+            gamma_current.innerHTML = this.innerHTML;
+        };
+    }
+    for(var i = 0; i < lambd_select_list.length;i++){
+        lambd_select_list[i].onclick = function () {
+            lambd_current.innerHTML = this.innerHTML;
+        };
+    }
+    for(var i = 0; i < omega_select_list.length;i++){
+        omega_select_list[i].onclick = function () {
+            omega_current.innerHTML = this.innerHTML;
+        };
+    }
+    for(var i = 0; i < kappa_select_list.length;i++){
+        kappa_select_list[i].onclick = function () {
+            kappa_current.innerHTML = this.innerHTML;
+        };
+    }
+    for(var i = 0; i < pop_select_list.length;i++){
+        pop_select_list[i].onclick = function () {
+            pop_current.innerHTML = this.innerHTML;
+        };
+    }
+
+</script>
+
+<!--网页尾部 -->
+{% include 'footer.html' %}
